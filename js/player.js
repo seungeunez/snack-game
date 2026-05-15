@@ -11,6 +11,9 @@ const keys = {
 
 let player = createInitialPlayer();
 let shakeUntil = 0;
+let moodExpression = null;
+let hopStart = 0;
+let hopUntil = 0;
 
 function createInitialPlayer() {
   return {
@@ -43,10 +46,27 @@ function handleKeyUp(event) {
 export function resetPlayer() {
   player = createInitialPlayer();
   shakeUntil = 0;
+  moodExpression = null;
+  hopStart = 0;
+  hopUntil = 0;
 }
 
 export function triggerPlayerShake(durationMs) {
   shakeUntil = performance.now() + durationMs;
+}
+
+export function setPlayerMood(expression) {
+  moodExpression = expression;
+}
+
+export function triggerPlayerHop(durationMs) {
+  const now = performance.now();
+  hopStart = now;
+  hopUntil = now + durationMs;
+}
+
+export function isPlayerHopActive() {
+  return performance.now() < hopUntil;
 }
 
 export function updatePlayer(deltaSeconds) {
@@ -73,19 +93,31 @@ export function getPlayerBounds() {
 }
 
 export function drawPlayer(ctx) {
+  const now = performance.now();
   const shakeOffset =
-    performance.now() < shakeUntil
-      ? Math.sin(performance.now() / 20) * 4
+    now < shakeUntil
+      ? Math.sin(now / 20) * 4
       : 0;
+  const hopOffset = getHopOffset(now);
+  const appearance = getAppearance();
 
   drawCustomPlayer(
     ctx,
     player.x + shakeOffset,
-    player.y,
+    player.y + hopOffset,
     player.width,
     player.height,
-    getAppearance()
+    moodExpression ? { ...appearance, expression: moodExpression } : appearance
   );
+}
+
+function getHopOffset(now) {
+  if (now >= hopUntil || hopUntil <= hopStart) {
+    return 0;
+  }
+
+  const progress = (now - hopStart) / (hopUntil - hopStart);
+  return -Math.sin(progress * Math.PI) * 58;
 }
 
 function clamp(value, min, max) {

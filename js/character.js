@@ -121,11 +121,18 @@ export function drawCustomPlayer(ctx, x, y, width, height, look = appearance) {
   const skin = "#f4c27a";
   const clothes = clothesColors[look.clothes] || clothesColors.blue;
 
-  drawLegs(ctx, x, y, width);
-  drawClothes(ctx, x, y, width, look.clothes, clothes);
-  drawHead(ctx, centerX, y + 14, skin);
-  drawExpression(ctx, centerX, y + 14, look.expression);
-  drawHair(ctx, centerX, y + 14, look.hair);
+  const isFrustrated = look.expression === "frustrated";
+  const slumpOffset = isFrustrated ? 5 : 0;
+
+  drawLegs(ctx, x, y + slumpOffset, width);
+  drawClothes(ctx, x, y + slumpOffset, width, look.clothes, clothes);
+  drawHead(ctx, centerX, y + 14 + slumpOffset, skin);
+  drawExpression(ctx, centerX, y + 14 + slumpOffset, look.expression);
+  drawHair(ctx, centerX, y + 14 + slumpOffset, look.hair);
+
+  if (isFrustrated) {
+    drawFrustrationMarks(ctx, centerX, y + 14 + slumpOffset);
+  }
 }
 
 function drawLegs(ctx, x, y, width) {
@@ -198,12 +205,50 @@ function drawExpression(ctx, centerX, centerY, expression) {
     return;
   }
 
+  if (expression === "frustrated") {
+    ctx.strokeStyle = "#2f261f";
+    ctx.lineWidth = 1.7;
+    ctx.beginPath();
+    ctx.moveTo(centerX - 7, centerY - 5);
+    ctx.lineTo(centerX - 2, centerY - 2);
+    ctx.moveTo(centerX + 7, centerY - 5);
+    ctx.lineTo(centerX + 2, centerY - 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY + 7, 5, Math.PI + 0.2, Math.PI * 2 - 0.2);
+    ctx.stroke();
+
+    ctx.fillStyle = "#6ec6ff";
+    ctx.beginPath();
+    ctx.ellipse(centerX + 8, centerY + 4, 2, 4, 0.1, 0, Math.PI * 2);
+    ctx.fill();
+    return;
+  }
+
   ctx.fillRect(centerX - 4, centerY - 1, 3, 1.5);
   ctx.fillRect(centerX + 1, centerY - 1, 3, 1.5);
   ctx.beginPath();
   ctx.moveTo(centerX - 2, centerY + 4);
   ctx.lineTo(centerX + 2, centerY + 4);
   ctx.stroke();
+}
+
+function drawFrustrationMarks(ctx, centerX, centerY) {
+  ctx.save();
+  ctx.strokeStyle = "rgba(47, 38, 31, 0.55)";
+  ctx.lineWidth = 1.5;
+
+  for (let i = 0; i < 3; i += 1) {
+    const x = centerX - 22 + i * 8;
+    ctx.beginPath();
+    ctx.moveTo(x, centerY - 22);
+    ctx.lineTo(x - 2, centerY - 17);
+    ctx.lineTo(x + 2, centerY - 12);
+    ctx.stroke();
+  }
+
+  ctx.restore();
 }
 
 function drawHair(ctx, centerX, centerY, hair) {

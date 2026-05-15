@@ -38,6 +38,7 @@ export const FEEDBACK = {
   messageDuration: 1200,
   shakeDuration: 350,
   slashEffectDuration: 200,
+  gameOverHopDuration: 520,
 };
 
 export const SLASH_CONFIG = {

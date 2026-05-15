@@ -12,7 +12,10 @@ import {
 import {
   drawPlayer,
   getPlayerBounds,
+  isPlayerHopActive,
   resetPlayer,
+  setPlayerMood,
+  triggerPlayerHop,
   triggerPlayerShake,
   updatePlayer,
 } from "./player.js";
@@ -48,6 +51,7 @@ let animationId = null;
 let lastTimestamp = 0;
 let slashEffectUntil = 0;
 let slashEffectY = 0;
+let gameOverAnimationId = null;
 
 export function initGame(canvasElement) {
   canvas = canvasElement;
@@ -103,6 +107,8 @@ export function startGame() {
 
   lastTimestamp = performance.now();
   cancelAnimationFrame(animationId);
+  cancelAnimationFrame(gameOverAnimationId);
+  gameOverAnimationId = null;
   animationId = requestAnimationFrame(gameLoop);
 }
 
@@ -140,7 +146,9 @@ export function togglePause() {
 
 export function resetGame() {
   cancelAnimationFrame(animationId);
+  cancelAnimationFrame(gameOverAnimationId);
   animationId = null;
+  gameOverAnimationId = null;
   resetToIdle();
   resetPlayer();
   resetItems();
@@ -282,11 +290,39 @@ function endGame() {
   }
 
   const gameResult = setGameOver();
+  if (gameResult.isNewPersonalBest) {
+    setPlayerMood(null);
+  } else {
+    setPlayerMood("surprised");
+    triggerPlayerHop(FEEDBACK.gameOverHopDuration);
+  }
+
   renderHud();
   showGameOverPanel(gameResult);
   syncBestScoreDisplay();
   updateControlButtons();
   drawFrame();
+
+  if (!gameResult.isNewPersonalBest) {
+    animateGameOverHop();
+  }
+}
+
+function animateGameOverHop() {
+  if (!getState().isGameOver) {
+    return;
+  }
+
+  drawFrame();
+
+  if (isPlayerHopActive()) {
+    gameOverAnimationId = requestAnimationFrame(animateGameOverHop);
+    return;
+  }
+
+  setPlayerMood("frustrated");
+  drawFrame();
+  gameOverAnimationId = null;
 }
 
 function loadImage(source) {
