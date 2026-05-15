@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>과자 먹기 게임</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="game-panel">
+      <h1>과자 먹기 게임</h1>
+      <p class="description">
+        사람을 움직여 떨어지는 과자를 먹으면 점수를 얻습니다. 똥과 벌레는 피하세요!
+        방향키 또는 W, A, S, D로 이동하고, 스페이스로 똥·벌레를 한 번 벨 수 있습니다. 드물게 나오는 골드바는 +40점!
+      </p>
+
+      <div class="player-card">
+        <label class="input-label" for="username-input">플레이어 이름</label>
+        <input
+          id="username-input"
+          class="username-input"
+          type="text"
+          maxlength="12"
+          placeholder="이름을 입력하세요"
+          autocomplete="nickname"
+        >
+        <button id="character-open-button" class="secondary-button" type="button">캐릭터 변경</button>
+      </div>
+
+      <div class="status-card">
+        <div>
+          <p class="status-label">현재 점수</p>
+          <strong id="score">0</strong>
+        </div>
+        <div>
+          <p class="status-label">최고 점수</p>
+          <strong id="best-score">0</strong>
+        </div>
+        <div>
+          <p class="status-label">남은 시간</p>
+          <strong id="time-left">30초</strong>
+        </div>
+        <div>
+          <p class="status-label">베기 (1회)</p>
+          <strong id="slash-status">1회</strong>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="start-button" class="primary-button" type="button">게임 시작</button>
+        <button id="pause-button" class="secondary-button" type="button" hidden>게임 중지</button>
+        <button id="reset-button" class="secondary-button" type="button">게임 초기화</button>
+      </div>
+
+      <div id="canvas-shell" class="canvas-shell">
+        <canvas id="game-canvas" width="640" height="480" aria-label="과자 먹기 게임 필드"></canvas>
+      </div>
+
+      <p id="message" class="message" aria-live="polite">
+        이름을 입력한 뒤 시작 버튼을 누르거나 스페이스 키를 눌러주세요.
+      </p>
+
+      <section id="game-over-panel" class="game-over-panel" hidden>
+        <h2>게임 종료</h2>
+        <p id="game-over-message">시간이 끝났습니다.</p>
+        <p class="final-score-label">최종 점수</p>
+        <strong id="final-score" class="final-score">0</strong>
+        <button id="restart-button" class="primary-button" type="button">다시 하기</button>
+      </section>
+
+      <section class="ranking-panel">
+        <h2>랭킹 TOP 5</h2>
+        <ol id="ranking-list" class="ranking-list"></ol>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="character-modal" class="character-modal">
+    <div class="character-modal-content">
+      <div class="character-modal-header">
+        <h2>캐릭터 꾸미기</h2>
+        <button id="character-close-button" class="modal-close-button" type="button" aria-label="닫기">×</button>
+      </div>
+      <div class="character-layout">
+        <canvas id="character-preview" width="104" height="80" aria-label="캐릭터 미리보기"></canvas>
+        <div class="character-options">
+          <label class="input-label" for="hair-select">헤어스타일</label>
+          <select id="hair-select" class="character-select"></select>
+          <label class="input-label" for="expression-select">표정</label>
+          <select id="expression-select" class="character-select"></select>
+          <label class="input-label" for="clothes-select">옷</label>
+          <select id="clothes-select" class="character-select"></select>
+        </div>
+      </div>
+      <button id="character-confirm-button" class="primary-button" type="button">적용하기</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
