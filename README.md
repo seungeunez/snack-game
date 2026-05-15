@@ -154,3 +154,12 @@ snack-game/
 - `requestAnimationFrame`은 브라우저가 부드럽게 화면을 다시 그리도록 도와주는 함수입니다.
 - `localStorage`는 브라우저에 간단한 데이터를 저장하는 공간입니다.
 
+
+## 게임 화면
+
+### 캐릭터 변경 화면
+![alt text](image-1.png)
+
+### 게임 실행 화면
+![alt text](image.png) 
+
